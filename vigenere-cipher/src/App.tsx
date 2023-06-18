@@ -5,6 +5,34 @@ const App: React.FC = () => {
   const [resultText, setResultText] = useState("");
   const [encryptionKey, setEncryptionKey] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const alphabet = [
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+  ];
 
   function onChangeHandler(element: string, value: string) {
     if (validator(value)) {
@@ -35,13 +63,51 @@ const App: React.FC = () => {
     } else {
       decode();
     }
-
-    setResultText(resultText);
   }
 
-  function encode() {}
+  function encode() {
+    let result = [];
+    for (let n = 0; inputText.length > n; n++) {
+      let inputTextNumber = alphabet.findIndex((element) => element === inputText.charAt(n));
+      let encryptionKeyNumber;
 
-  function decode() {}
+      if (n >= encryptionKey.length) {
+        encryptionKeyNumber = alphabet.findIndex(
+          (element) => element === encryptionKey.charAt(n - encryptionKey.length)
+        );
+      } else {
+        encryptionKeyNumber = alphabet.findIndex((element) => element === encryptionKey.charAt(n));
+      }
+
+      inputTextNumber + encryptionKeyNumber >= 26
+        ? result.push(alphabet[(inputTextNumber + encryptionKeyNumber) % 26])
+        : result.push(alphabet[inputTextNumber + encryptionKeyNumber]);
+    }
+
+    setResultText(result.join(""));
+  }
+
+  function decode() {
+    let result = [];
+    for (let n = 0; inputText.length > n; n++) {
+      let inputTextNumber = alphabet.findIndex((element) => element === inputText.charAt(n));
+      let encryptionKeyNumber;
+
+      if (n >= encryptionKey.length) {
+        encryptionKeyNumber = alphabet.findIndex(
+          (element) => element === encryptionKey.charAt(n - encryptionKey.length)
+        );
+      } else {
+        encryptionKeyNumber = alphabet.findIndex((element) => element === encryptionKey.charAt(n));
+      }
+
+      inputTextNumber - encryptionKeyNumber <= 0
+        ? result.push(alphabet[(inputTextNumber - encryptionKeyNumber) % 26])
+        : result.push(alphabet[inputTextNumber - encryptionKeyNumber]);
+    }
+
+    setResultText(result.join(""));
+  }
 
   return (
     <>
@@ -59,7 +125,7 @@ const App: React.FC = () => {
       </div>
 
       <p>結果</p>
-      <textarea>{resultText}</textarea>
+      {resultText}
     </>
   );
 };
